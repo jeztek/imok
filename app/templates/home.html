@@ -1,41 +1,79 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="message">{{ message }}</div>
+<p>Welcome {{ first_name }} {{ last_name }} [ <a href="/user/logout/">Logout</a> ]</p>
 
-<p>Welcome {{ first_name }} {{ last_name }}!</p>
-<p><a href="/user/logout/">[Logout]</a></p>
+{% if message %}<div class="message">{{ message }}</div>{% endif %}
 
-<p>
-{% if phones %}
-  <table>
-  {% for phone in phones %}
-  <tr>
-    <td>{{ phone.user_key }}</td>
-    <td>{% ifnotequal phone.is_valid 1 %} (pending){% endifnotequal %}</td>
-    <td>[ <a href="/user/register/phone/delete/{{ phone.user_key }}/">delete</a> ]</td>
-  </tr>
-  {% endfor %}
-  </table>
-  + <a href=/user/register/phone/>Register another phone</a>
+<div class="group_element">
+  <table class="table"><th>Phones</th></table>
+  {% if phones %}
+    <div class="subgroup_element">
+      <table class="table">
+	<th>Phone Number</th>
+	<th>User Key</th>
+	<th>Status</th>
+	{% for phone in phones %}
+	<tr>
+          <td>{{ phone.phone_number }}</td>
+          <td>{{ phone.user_key }}</td>
+          <td>
+	    {% ifnotequal phone.is_valid 1 %}pending
+            {% else %}registered{% endifnotequal %}
+	  </td>
+	  <td>[ <a href="/user/register/phone/delete/{{ phone.user_key }}/">delete</a> ]</td>
+	</tr>
+	{% endfor %}
+      </table>
+      + [ <a href="/user/register/phone/">Register another phone</a> ]
+    </div>
+  {% else %}
+  + [ <a href="/user/register/phone/">Register phone</a> ]
+  {% endif %}
+</div>
 
-{% else %}
-  + <a href=/user/register/phone/>Register phone</a>
-{% endif %}
-</p>
+<div class="group_element">
+  <table class="table"><th>Accounts</th></table>
+  <div class="subgroup_element">
+    <table class="table">
+      {% if twitter_user %}
+      <tr>
+	<td>Twitter</td>
+	<td>{{ twitter_user.username }}</td>
+	<td>[ <a href="/user/register/twitter/delete/">delete</a> ]</td>
+      </tr>
+      {% else %}
+      <tr>
+	<td>+ [ <a href="/user/register/twitter/">Add Twitter</a> ]</td>
+      </tr>
+      {% endif %}
+      <tr>
+	<td>+ [ <a href="/">Add Facebook</a> ]</td>
+      </tr>
+    </table>
+  </div>
+</div>
 
-<p>
-{% if twitter_user %}
-  <table>
-  <tr>
-    <td>Twitter</td>
-    <td>{{ twitter_user.username }}</td>
-    <td>[ <a href=/user/register/twitter/delete/>delete</a> ]</td>
-  </tr>
-  </table>
-{% else %}
-  + <a href=/user/register/twitter/>Register Twitter</a>
-{% endif %}
-</p>
+<div class="group_element">
+  <table class="table"><th>Recent Messages</th></table>
+  {% if messages %}
+    <div class="subgroup_element">
+      <table class="table">
+	<th>Date/Time</th>
+	<th>Location</th>
+	<th>Message</th>
+	{% for message in messages %}
+	<tr>
+	  <td>{{ message.datetime }}</td>
+	  <td>{{ message.lat}} {{ message.lon }}</td>
+	  <td>{{ message.message }}</td>
+	</tr>
+	{% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <div class="subgroup_element">No messages</div>
+  {% endif %}
+</div>
 
 {% endblock body %}

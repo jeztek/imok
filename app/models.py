@@ -6,10 +6,11 @@ from django.contrib.auth.models import User
 class PhoneUser(models.Model):
 	user            = models.ForeignKey(User)
 	user_key        = models.CharField(max_length=5)
+	phone_number	= models.CharField(max_length=40)
 	is_valid		= models.BooleanField()
 	
 	def __unicode__(self):
-		return self.user.username + " - " + self.user_key
+		return self.user.username + " - " + self.phone_number
 
 
 class TwitterUser(models.Model):

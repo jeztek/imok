@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="message">{{ message }}</div>
+{% if message %}<div class="message">{{ message }}</div>{% endif %}
 
 <table class="container">
   <tr>
@@ -31,8 +31,8 @@
       </form>
     </td>
 
-    <td>
-      I'm OK! is a website and iPhone app that allows you to tell your 
+    <td valign="top" style="padding-top:15px">
+      I'm OK! is a website and mobile app that allows you to tell your 
       friends and loved ones that you're okay in the event of an emergency
       or disaster situation.
     </td>

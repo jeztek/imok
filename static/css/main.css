@@ -5,7 +5,7 @@ body {
 }
 
 .padded {
-    padding: 15px 50px;
+    padding: 15px 25px;
 }
 
 .box {
@@ -19,7 +19,37 @@ body {
 }
 
 #header img {
-    margin-left: -45px;
+    margin-left: -45px; 
+    border: none;
+}
+
+.table {
+  text-align: left;
+}
+
+.table th {
+    padding: 0px 10px;
+}
+
+.table td {
+    padding: 0px 10px;
+}
+
+.group_element {
+    padding: 10px 0px;
+}
+
+.subgroup_element {
+    padding: 0px 25px;
+}
+
+.message {
+    border: solid 1px #DDD;
+    padding: 5px;
+}
+
+.search {
+    float: right;
 }
 
 .form {

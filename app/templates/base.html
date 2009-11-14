@@ -19,14 +19,19 @@
 
 <body>
 <div id="header" class="padded">
-  <img src="/static/img/imok_logo.png">
+  <a href="/"><img src="/static/img/imok_logo.png"></a>
+  <div id="search" class="search">
+    <form action="/search/" method="post">
+      <input type="text" id="query" name="query"/> <input type="submit" value="Search" />
+    </form>
+  </div>
 </div>
 
 <div id="content" class="padded">
 {% block body %}{% endblock body %}
 </div>
 
-<div id="fooder"></div>
+<div id="footer"></div>
 
 </body>
 </html>

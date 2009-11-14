@@ -21,6 +21,8 @@ def home(request, message=''):
 		twitter_user = TwitterUser.objects.get(user=request.user)
 	except ObjectDoesNotExist:
 		twitter_user = None
+
+	messages = Post.objects.filter(user=request.user).order_by('-datetime')[:10]
 	
 	return render_to_response('home.html', {
 		'message'		: message,
@@ -28,6 +30,7 @@ def home(request, message=''):
 		'last_name'  	: request.user.last_name,
 		'phones'	 	: phone_user,
 		'twitter_user'	: twitter_user,
+		'messages'		: messages,
 	})
 
 
@@ -102,25 +105,53 @@ def user_register(request):
 		return render_to_response('user_register.html', {})
 
 
-@login_required
-def user_register_phone(request):
-	user_key = random_string(5)
+def search(request):
+	if request.method == 'POST':
+		try:
+			query = request.POST['query']
+		except KeyError:
+			return home(request, 'missing query')
+		return render_to_response('search.html', {
+			'query' : query,
+		})
 	
-	phone_user = PhoneUser.objects.create(
-		user 	 = request.user,
-		user_key = user_key,
-		is_valid = False,
-	)
+	else:
+		return home(request)
 
-	return render_to_response('user_register_phone.html', {
-		'phone_user' : phone_user,
-	})
+
+@login_required
+def user_register_phone(request):		
+	if request.method == 'POST':
+		try:
+			phone_number = request.POST['phone_number']
+			user_key = request.POST['user_key']
+		except:
+			return home(request, user_key)
+			
+		if len(PhoneUser.objects.filter(user_key=user_key)) > 0:
+			return home(request, 'user key already exists')
+
+		phone_user = PhoneUser.objects.create(
+			user 	 = request.user,
+			phone_number = phone_number,
+			user_key = user_key,
+			is_valid = False,
+		)
+		return home(request, 'phone registered')
+	else:
+		user_key = random_string(5)
+		while len(PhoneUser.objects.filter(user_key=user_key)) > 0:
+			user_key = random_string(5)
+
+		return render_to_response('user_register_phone.html', {
+			'user_key' : user_key,
+		})
 
 
 @login_required
 def user_register_phone_delete(request, user_key):
 	try:
-		phone_user = PhoneUser.objects.get(user_key=user_key)
+		phone_user = PhoneUser.objects.filter(user_key=user_key)
 	except ObjectDoesNotExist:
 		return home(request, "invalid phone")
 
@@ -133,6 +164,9 @@ def user_register_twitter(request):
 	if request.method == 'POST':
 		username	= request.REQUEST['username']
 		password	= request.REQUEST['password']
+
+		if len(TwitterUser.objects.filter(username=username)) > 0:
+			return home(request, 'twitter account already exists')
 
 		tuser = TwitterUser.objects.create(
 			user		= request.user,
@@ -178,12 +212,12 @@ def data_imok(request, user_key):
 		lat				= request.REQUEST['lat']
 		lon				= request.REQUEST['lon']
 	except KeyError:
-		return JsonResponse({'result' : False})
+		return JsonResponse({'result' : False, 'error' : 'missing parameters'})
 
 	try:
 		phone = PhoneUser.objects.get(user_key=user_key)
 	except ObjectDoesNotExist:
-		return JsonResponse({'result' : False})
+		return JsonResponse({'result' : False, 'error' : 'unknown user'})
 
 	message			= "I'm Ok!"
 	timestamp = datetime.today()
@@ -196,4 +230,4 @@ def data_imok(request, user_key):
 	)
 
 	result = twitter_post(request.user, message)
-	return JsonResponse({'result' : result})
+	return JsonResponse({'result' : result, 'twitter' : True})

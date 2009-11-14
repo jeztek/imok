@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-<div class="message">{{ message }}</div>
+{% if message %}<div class="message">{{ message }}</div>{% endif %}
 
 <form action="" method="post">
   <table>
@@ -11,9 +11,9 @@
     </tr>
     <tr>
       <td>Password:</td>
-      <td><input type="text" name="password" size="30" /></td>
+      <td><input type="password" name="password" size="30" /></td>
     </tr>
   </table>
-  <input type="submit" name="ok" value="Submit"	/>
+  <input type="submit" name="ok" value="Submit"	/>&nbsp;&nbsp;<a href="/">Cancel</a> 
 </form>
 {% endblock body %}

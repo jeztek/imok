@@ -6,6 +6,8 @@ urlpatterns = patterns('app.views',
 	(r'^user/logout/$', 'user_logout'),
 	(r'^user/register/$', 'user_register'),
 
+	(r'^search/$', 'search'),
+
 	(r'^user/register/phone/$', 'user_register_phone'),
 	(r'^user/register/phone/delete/(?P<user_key>\w+)/$', 'user_register_phone_delete'),
 

@@ -1,7 +1,17 @@
 {% extends "base.html" %}
 
 {% block body %}
-<p>Enter the following user key on your phone:</p>
-<p>{{ phone_user.user_key }}</p>
-<p><a href="/">[ Done ]</a></p>
+<form action="" method="post">
+  <table>
+    <tr><td>Enter your phone number:</td></tr>
+    <tr><td><input type="text" id="phone_number" name="phone_number" size="10" /></td></tr>
+
+    <tr><td>Enter the following user key on your phone:</td></tr>
+    <tr><td>{{ user_key }}</td></tr>
+    <tr><td></td></tr>
+    <tr><td><input type="submit" value="Done" />&nbsp;&nbsp;<a href="/">Cancel</a></td></tr>
+  </table>
+
+  <input type="hidden" name="user_key" value="{{ user_key }}" />
+</form>
 {% endblock body %}
