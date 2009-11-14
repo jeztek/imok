@@ -29,6 +29,7 @@
     var imok_userid = "HERE_THE_USERID_THROUGH_DJANGO";
 
     var fb_user_id = 0;
+    var session_key = 0;
 
     function update_user_box() {
         fb_user_id = FB.Connect.get_loggedInUser();
@@ -67,7 +68,7 @@
                  fDone = true;
                  //document.getElementById('FB_form').submit();
                  
-                 $.post("/data/register/facebook/", {fbid: fb_user_id, user_key: {{ user_key}} });
+                 $.post("/data/register/facebook/", {fbid: fb_user_id, user_key: {{ user_key }}, session_key: session_key });
                  
                }
              });
