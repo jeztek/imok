@@ -125,23 +125,30 @@ def user_register_phone(request):
 		try:
 			phone_number = request.POST['phone_number']
 			user_key = request.POST['user_key']
-		except:
+		except KeyError:
 			return home(request, user_key)
 			
-		if len(PhoneUser.objects.filter(user_key=user_key)) > 0:
-			return home(request, 'user key already exists')
 
-		phone_user = PhoneUser.objects.create(
-			user 	 = request.user,
-			phone_number = phone_number,
-			user_key = user_key,
-			is_valid = False,
-		)
+		try:
+			phone_user = PhoneUser.objects.get(user_key=user_key)
+		except ObjectDoesNotExist:
+			return home(request, 'invalid user key on registration')
+
+		phone_user.phone_number = phone_number
+		phone_user.save()
+
 		return home(request, 'phone registered')
 	else:
 		user_key = random_string(5)
 		while len(PhoneUser.objects.filter(user_key=user_key)) > 0:
 			user_key = random_string(5)
+
+		phone_user = PhoneUser.objects.create(
+			user	= request.user,
+			phone_number = "",
+			user_key = user_key,
+			is_valid = False,
+		)
 
 		return render_to_response('user_register_phone.html', {
 			'user_key' : user_key,
@@ -230,4 +237,4 @@ def data_imok(request, user_key):
 	)
 
 	result = twitter_post(request.user, message)
-	return JsonResponse({'result' : result, 'twitter' : True})
+	return JsonResponse({'result' : result})
