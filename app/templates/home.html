@@ -1,9 +1,41 @@
 {% extends "base.html" %}
 
 {% block body %}
+<div class="message">{{ message }}</div>
 
-{% if message %}
-  <p>{{ message }}</p>
+<p>Welcome {{ first_name }} {{ last_name }}!</p>
+<p><a href="/user/logout/">[Logout]</a></p>
+
+<p>
+{% if phones %}
+  <table>
+  {% for phone in phones %}
+  <tr>
+    <td>{{ phone.user_key }}</td>
+    <td>{% ifnotequal phone.is_valid 1 %} (pending){% endifnotequal %}</td>
+    <td>[ <a href="/user/register/phone/delete/{{ phone.user_key }}/">delete</a> ]</td>
+  </tr>
+  {% endfor %}
+  </table>
+  + <a href=/user/register/phone/>Register another phone</a>
+
+{% else %}
+  + <a href=/user/register/phone/>Register phone</a>
 {% endif %}
+</p>
+
+<p>
+{% if twitter_user %}
+  <table>
+  <tr>
+    <td>Twitter</td>
+    <td>{{ twitter_user.username }}</td>
+    <td>[ <a href=/user/register/twitter/delete/>delete</a> ]</td>
+  </tr>
+  </table>
+{% else %}
+  + <a href=/user/register/twitter/>Register Twitter</a>
+{% endif %}
+</p>
 
 {% endblock body %}

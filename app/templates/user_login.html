@@ -1,29 +1,43 @@
 {% extends "base.html" %}
 
 {% block body %}
-<form action="" method="post">
+<div class="message">{{ message }}</div>
 
-  <div class="message">{{ message }}</div>
+<table class="container">
+  <tr>
+    <td>
+      <form action="/user/login/" method="post">
+	<table class="form">
+	  <tr>
+	    <td>Username</td>
+	    <td>
+              <input type="text" id="username" name="username" size="20" />
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>Password</td>
+	    <td>
+	      <input type="password" id="password" name="password" size="20" />
+	    </td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td>
+	      <input type="submit" name="login" value="Login" />
+	      &nbsp;&nbsp;<a href="/user/register/">[Register as new user]</a>
+	    </td>
+	  </tr>
+	</table>
+      </form>
+    </td>
 
-  <table class="form">
-    <tr>
-      <td>Username</td>
-      <td>
-        <input type="text" id="username" name="username" size="20" />
-      </td>
-   </tr>
-   <tr>
-     <td>Password</td>
-     <td>
-       <input type="password" id="password" name="password" size="20" />
-       </td>
-   </tr>
-   <tr>
-     <td></td>
-     <td><input type="submit" name="login" value="Login" /></td>
-   </tr>
-   </table>
-    
+    <td>
+      I'm OK! is a website and iPhone app that allows you to tell your 
+      friends and loved ones that you're okay in the event of an emergency
+      or disaster situation.
+    </td>
+  </tr>
 
-</form>
+</table>
+
 {% endblock body %}

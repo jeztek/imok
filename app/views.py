@@ -1,19 +1,33 @@
 from datetime import datetime
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
-from core.helpers import JsonResponse
-from models import User, TwitterUser, Post
+from core.helpers import random_string, JsonResponse
+from models import User, PhoneUser, TwitterUser, Post
 from twitter import twitter_post
 
 
+@login_required
 def home(request):
-    return render_to_response('home.html', {})
+
+	phone_user = PhoneUser.objects.filter(user=request.user)
+
+	try:
+		twitter_user = TwitterUser.objects.get(user=request.user)
+	except ObjectDoesNotExist:
+		twitter_user = None
+	
+	return render_to_response('home.html', {
+		'first_name' 	: request.user.first_name,
+		'last_name'  	: request.user.last_name,
+		'phones'	 	: phone_user,
+		'twitter_user'	: twitter_user,
+	})
 
 
 def user_login(request):
@@ -24,22 +38,25 @@ def user_login(request):
 			password = request.REQUEST['password']
 		except KeyError:
 			return render_to_response('user_login.html', {
-				'message' : 'invalid username or password'
+				'message' : 'missing username or password'
 			})
 
 		user = auth.authenticate(username=username, password=password)
 		if user is not None:
 			if user.is_active:
 				auth.login(request, user)
-				return render_to_response('home.html', {
-					'message' : 'login successful',
-				})
+				return HttpResponseRedirect('/')
 
 		return render_to_response('user_login.html', {
-			'message' : 'invalid user',
+			'message' : 'invalid username or password',
 		})
 	else:
 		return render_to_response('user_login.html', {})
+
+
+def user_logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect('/')
 
 
 def user_register(request):
@@ -52,12 +69,12 @@ def user_register(request):
 		last_name		= request.REQUEST['last_name']
 
 		templ = {
-			'username': username,
-			'first_name': first_name,
-			'last_name': last_name,
-			'password': password,
-			'repassword': repassword,
-			'email': email
+			'username'	 : username,
+			'first_name' : first_name,
+			'last_name'	 : last_name,
+			'password'	 : password,
+			'repassword' : repassword,
+			'email'		 : email
 		}
 
 		if password != repassword:
@@ -77,65 +94,100 @@ def user_register(request):
 		user.last_name = last_name
 		user.save()
 
-		return render_to_response('home.html', {
-			'message' : 'registration successful',
-		})
-
+		return HttpResponseRedirect('/')
+	
 	else:
 		return render_to_response('user_register.html', {})
 
 
 @login_required
 def user_register_phone(request):
-    pass
+	user_key = random_string(5)
+	
+	phone_user = PhoneUser.objects.create(
+		user 	 = request.user,
+		user_key = user_key,
+		is_valid = False,
+	)
 
-
-@login_required
-def user_register_twitter(request):
-    if request.method == 'POST':
-        username	= request.REQUEST['username']
-        password	= request.REQUEST['password']
-
-        tuser = TwitterUser.objects.create(
-            user	= request.user,
-            username	= username,
-            password	= password,
-		)
-        return render_to_response('home.html', {
-                'message' : 'twitter integration successful',
-		})
-
-    else:
-        return render_to_response('user_register_twitter.html', {})
-
-
-def data_register(request, user_key):
-
-	return JsonResponse({
-		"result" : True,
-		"first_name" : "Tom",
-		"last_name" : "Jones",
+	return render_to_response('user_register_phone.html', {
+		'phone_user' : phone_user,
 	})
 
 
-#@login_required
-def data_imok(request, user_key):
+@login_required
+def user_register_phone_delete(request, user_key):
+	try:
+		phone_user = PhoneUser.objects.get(user_key=user_key)
+	except ObjectDoesNotExist:
+		return HttpResponseRedirect('/')
+
+	phone_user.delete()
+	return HttpResponseRedirect('/')
+
+	
+@login_required
+def user_register_twitter(request):
+	if request.method == 'POST':
+		username	= request.REQUEST['username']
+		password	= request.REQUEST['password']
+
+		tuser = TwitterUser.objects.create(
+			user		= request.user,
+			username	= username,
+			password	= password,
+		)
+		return HttpResponseRedirect('/')
+	
+	else:
+		return render_to_response('user_register_twitter.html', {})
+
+
+@login_required
+def user_register_twitter_delete(request):
+	twitter_user = TwitterUser.objects.get(user=request.user)
+	twitter_user.delete()
+	return HttpResponseRedirect('/')
+
+	
+def data_register(request, user_key):
+
+	try:
+		phone_user = PhoneUser.objects.get(user_key=user_key)
+	except ObjectDoesNotExist:
+		return JsonResponse({'result' : False})
+
+	phone_user.is_valid = True
+	phone_user.save()
+
+	return JsonResponse({
+		"result" 		: True,
+		"first_name" 	: phone_user.user.first_name,
+		"last_name" 	: phone_user.user.last_name,
+	})
+
+
+def data_imok(request, user_key):	
 	try:
 		lat				= request.REQUEST['lat']
 		lon				= request.REQUEST['lon']
 	except KeyError:
-		return JsonResponse({'error' : 'missing parameter'})
+		return JsonResponse({'result' : False})
+
+	try:
+		phone = PhoneUser.objects.get(user_key=user_key)
+	except ObjectDoesNotExist:
+		return JsonResponse({'result' : False})
 
 	message			= "I'm Ok!"
 	timestamp = datetime.today()
-#	post = Post.objects.create(
-#		user		= request.user,
-#		datetime	= timestamp,
-#		lat			= lat,
-#		lon			= lon,
-#		message		= message,
-#	)
+	post = Post.objects.create(
+		user		= request.user,
+		datetime	= timestamp,
+		lat			= lat,
+		lon			= lon,
+		message		= message,
+	)
 
-#	result = twitter_post(request.user, message)
-	result = True
+	result = twitter_post(request.user, message)
 	return JsonResponse({'result' : result})
