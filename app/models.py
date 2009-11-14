@@ -22,6 +22,15 @@ class TwitterUser(models.Model):
 		return self.user.username + " - " + self.username
 
 
+class FacebookUser(models.Model):
+	user		= models.ForeignKey(User)
+	fbid		= models.CharField(max_length=100)
+	session_key	= models.CharField(max_length=200)
+
+	def __unicode__(self):
+		return self.user.username + " - " + self.fbid
+
+	
 class Post(models.Model):
 	user		= models.ForeignKey(User)
 	datetime	= models.DateTimeField()

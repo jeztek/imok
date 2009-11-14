@@ -15,7 +15,10 @@ urlpatterns = patterns('app.views',
 	(r'^user/register/twitter/delete/$', 'user_register_twitter_delete'),
 					   
 	(r'^user/register/facebook/$', 'user_register_facebook'),
+					
 
 	(r'^data/register/(?P<user_key>\w+)/$', 'data_register'),
 	(r'^data/imok/(?P<user_key>\w+)/$', 'data_imok'),
+
+	(r'data/register/facebook/$', 'data_register_facebook'),
 )

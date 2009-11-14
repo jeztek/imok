@@ -196,6 +196,19 @@ def user_register_twitter_delete(request):
 
 	return home(request, 'twitter account deleted')
 
+
+@login_required
+def user_register_facebook(request):
+
+	try:
+		phone_user = PhoneUser.objects.get(user=request.user)
+	except ObjectDoesNotExist:
+		return home(request, "please register a phone first")
+	
+	return render_to_response('user_register_facebook.html', {
+		'user_key' : phone_user.user_key,
+	})
+
 	
 def data_register(request, user_key):
 
@@ -238,3 +251,26 @@ def data_imok(request, user_key):
 
 	result = twitter_post(phone.user, message)
 	return JsonResponse({'result' : result})
+
+
+def data_register_facebook(request):
+	try:
+		user_key	= request.REQUEST['user_key']
+		fbid		= request.REQUEST['fbid']
+		session_key = request.REQUEST['session_key']
+	except KeyError:
+		return JsonResponse({'error' : 'missing parameters'})
+
+	try:
+		phone_user = PhoneUser.objects.get(user_key=user_key)
+	except ObjectDoesNotExist:
+		return JsonResponse({'error' : 'invalid user key'})
+	
+	facebook_user = FacebookUser.objects.create(
+		user		= phone_user.user,
+		fbid		= fbid,
+		session_key = session_key,
+	)
+
+	return JsonResponse({'result' : True})
+
