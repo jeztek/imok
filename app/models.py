@@ -3,13 +3,13 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
-
-class UserProfile(models.Model):
-	user 			= models.ForeignKey(User, unique=True)
-
-	first_name		= models.CharField(max_length=40)
-	last_name		= models.CharField(max_length=40)
+class PhoneUser(models.Model):
+        user            = models.ForeignKey(User)
 	phone_number 	= models.PositiveIntegerField()
+        user_key        = models.CharField(max_length=5)
+
+        def __unicode__(self):
+                return self.user.username + " - " + self.phone_number
 
 
 class TwitterUser(models.Model):
@@ -25,8 +25,8 @@ class Post(models.Model):
 	user		= models.ForeignKey(User)
 	datetime	= models.DateTimeField()
 
-	lat			= models.FloatField()
-	lon			= models.FloatField()
+	lat		= models.FloatField()
+	lon		= models.FloatField()
 	message		= models.CharField(max_length=40)
 
 	def __unicode__(self):

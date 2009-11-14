@@ -1,33 +1,53 @@
 {% extends "base.html" %}
 
 {% block body %}
-<form action="#" method="post">
-  <table>
+<div class="title padded">Create an Account</div>
+
+<div class="box padded">
+
+<div id="message">{{ message }}</div>
+  
+<form action="" method="post">
+  <table class="form">
     <tr>
-      <td>Username:</td>
-      <td><input type="text" name="username" size="30" /></td>
+      <td>Name</td>
+      <td>
+        <input type="text" id="first_name" name="first_name" size="10"
+          value="{{ first_name }}" />
+        <input type="text" id="last_name" name="last_name" size="10"
+          value="{{ last_name }}" />
+      </td>
+    </tr>
+    <tr><td class="spacer"></tr>
+    <tr>
+      <td>Username</td>
+      <td><input type="text" id="username" name="username" size="20"
+            value="{{ username }}" /></td>
+    </tr>
+    <tr><td class="spacer"></tr>
+    <tr>
+      <td>Password</td>
+      <td><input type="password" id="password" name="password" size="20"
+             value="{{ password }}" /></td>
     </tr>
     <tr>
-      <td>E-mail:</td>
-      <td><input type="text" name="email" size="30" /></td>
+      <td>Password (Again)</td>
+      <td><input type="password" id="repassword" name="repassword" size="20"
+             value="{{ repassword }}" /></td>
+    </tr>
+    <tr><td class="spacer"></tr>
+    <tr>
+      <td>E-mail</td>
+      <td><input type="text" id="email" name="email" size="20"
+             value="{{ email }}" /></td>
     </tr>
     <tr>
-      <td>Password:</td>
-      <td><input type="text" name="password" size="30" /></td>
-    </tr>
-    <tr>
-      <td>First name:</td>
-      <td><input type="text" name="first_name" size="30" /></td>
-    </tr>
-    <tr>
-      <td>Last name:</td>
-      <td><input type="text" name="last_name" size="30" /></td>
-    </tr>
-    <tr>
-      <td>Phone number:</td>
-      <td><input type="text" name="phone_number" size="30" /></td>
+      <td></td>
+      <td><input type="submit" name="ok" value="Submit" /></td>
     </tr>
   </table>
-  <input type="submit" name="ok" value="Submit"	/>
+
 </form>
+
+</div>
 {% endblock body %}
