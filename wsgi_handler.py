@@ -4,7 +4,7 @@ import os, sys
 sys.stdout = sys.stderr
 
 sys.path.append(os.path.realpath(os.path.dirname(__file__)) + '/..')
-os.environ['DJANGO_SETTINGS_MODULE'] = 'done.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'imok.settings'
 
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
