@@ -13,7 +13,7 @@ from twitter import twitter_post
 
 
 @login_required
-def home(request):
+def home(request, message=''):
 
 	phone_user = PhoneUser.objects.filter(user=request.user)
 
@@ -23,6 +23,7 @@ def home(request):
 		twitter_user = None
 	
 	return render_to_response('home.html', {
+		'message'		: message,
 		'first_name' 	: request.user.first_name,
 		'last_name'  	: request.user.last_name,
 		'phones'	 	: phone_user,
@@ -45,7 +46,7 @@ def user_login(request):
 		if user is not None:
 			if user.is_active:
 				auth.login(request, user)
-				return HttpResponseRedirect('/')
+				return home(request)
 
 		return render_to_response('user_login.html', {
 			'message' : 'invalid username or password',
@@ -56,7 +57,7 @@ def user_login(request):
 
 def user_logout(request):
 	auth.logout(request)
-	return HttpResponseRedirect('/')
+	return home(request)
 
 
 def user_register(request):
@@ -94,7 +95,8 @@ def user_register(request):
 		user.last_name = last_name
 		user.save()
 
-		return HttpResponseRedirect('/')
+		# TODO: Log user in?
+		return home(request)
 	
 	else:
 		return render_to_response('user_register.html', {})
@@ -120,10 +122,10 @@ def user_register_phone_delete(request, user_key):
 	try:
 		phone_user = PhoneUser.objects.get(user_key=user_key)
 	except ObjectDoesNotExist:
-		return HttpResponseRedirect('/')
+		return home(request, "invalid phone")
 
 	phone_user.delete()
-	return HttpResponseRedirect('/')
+	return home(request, "phone successfully deleted")
 
 	
 @login_required
@@ -137,7 +139,7 @@ def user_register_twitter(request):
 			username	= username,
 			password	= password,
 		)
-		return HttpResponseRedirect('/')
+		return home(request, 'twitter account registered')
 	
 	else:
 		return render_to_response('user_register_twitter.html', {})
@@ -147,7 +149,7 @@ def user_register_twitter(request):
 def user_register_twitter_delete(request):
 	twitter_user = TwitterUser.objects.get(user=request.user)
 	twitter_user.delete()
-	return HttpResponseRedirect('/')
+	return home(request, 'twitter account deleted')
 
 	
 def data_register(request, user_key):
