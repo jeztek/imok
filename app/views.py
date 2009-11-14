@@ -16,7 +16,8 @@ def home(request):
 
 
 def user_login(request):
-	if request.method == 'POST':
+	# TODO: GET -> POST
+	if request.method == 'GET':
 		try:
 			username = request.REQUEST['u']
 			password = request.REQUEST['p']
@@ -84,17 +85,25 @@ def user_register_twitter(request):
 	else:
 		return render_to_response('user_register_twitter.html', {})
 
-	
+
+@login_required
 def data_post(request):
 	try:
 		lat				= request.REQUEST['lat']
 		lon				= request.REQUEST['lon']
 		message			= request.REQUEST['message']
-
 	except KeyError:
 		return JsonResponse({'error' : 'missing parameter'})
 
 	timestamp = datetime.today()
+	post = Post.objects.create(
+		user		= request.user,
+		datetime	= timestamp,
+		lat			= lat,
+		lon			= lon,
+		message		= message,
+	)
 
-	return JsonResponse({'result' : True})
+	result = twitter_post(request.user, message)
+	return JsonResponse({'result' : result})
 
