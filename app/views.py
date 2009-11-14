@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 
 from core.helpers import random_string, JsonResponse
-from models import User, PhoneUser, TwitterUser, Post
+from models import User, PhoneUser, TwitterUser, FacebookUser, Post
 from twitter import twitter_post
 
 
@@ -22,6 +22,11 @@ def home(request, message=''):
 	except ObjectDoesNotExist:
 		twitter_user = None
 
+	try:
+		facebook_user = FacebookUser.objects.get(user=request.user)
+	except ObjectDoesNotExist:
+		facebook_user = None
+
 	messages = Post.objects.filter(user=request.user).order_by('-datetime')[:10]
 	
 	return render_to_response('home.html', {
@@ -30,6 +35,7 @@ def home(request, message=''):
 		'last_name'  	: request.user.last_name,
 		'phones'	 	: phone_user,
 		'twitter_user'	: twitter_user,
+		'facebook_user'	: facebook_user,
 		'messages'		: messages,
 	})
 

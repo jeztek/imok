@@ -47,9 +47,18 @@
 	<td>+ [ <a href="/user/register/twitter/">Add Twitter</a> ]</td>
       </tr>
       {% endif %}
+
+      {% if facebook_user %}
+      <tr>
+	<td>Facebook</td>
+	<td>{{ facebook_user.fbid }}</td>
+	<td>[ <a href="/user/register/facebook/delete/">delete</a> ]</td>
+      </tr>
+      {% else %}
       <tr>
 	<td>+ [ <a href="/user/register/facebook/">Add Facebook</a> ]</td>
       </tr>
+      {% endif %}
     </table>
   </div>
 </div>
