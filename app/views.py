@@ -147,8 +147,12 @@ def user_register_twitter(request):
 
 @login_required
 def user_register_twitter_delete(request):
-	twitter_user = TwitterUser.objects.get(user=request.user)
-	twitter_user.delete()
+	try:
+		twitter_user = TwitterUser.objects.get(user=request.user)
+		twitter_user.delete()
+	except ObjectDoesNotExist:
+		return home(request, 'unknown twitter account')
+
 	return home(request, 'twitter account deleted')
 
 	
