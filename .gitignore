@@ -2,5 +2,5 @@
 *~
 *.pyc
 local_settings.py
-done.db
+imok.db
 .DS_Store
