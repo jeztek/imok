@@ -86,6 +86,9 @@ INSTALLED_APPS = (
 	'imok.app',
 )
 
+AUTH_PROFILE_MODULE = "app.UserProfile"
+LOGIN_URL = "/user/login/"
+
 # Import local settings at the end so they can override settings here
 try:
     from imok.local_settings import *
