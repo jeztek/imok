@@ -229,12 +229,12 @@ def data_imok(request, user_key):
 	message			= "I'm Ok!"
 	timestamp = datetime.today()
 	post = Post.objects.create(
-		user		= request.user,
+		user		= phone.user,
 		datetime	= timestamp,
 		lat			= lat,
 		lon			= lon,
 		message		= message,
 	)
 
-	result = twitter_post(request.user, message)
+	result = twitter_post(phone.user, message)
 	return JsonResponse({'result' : result})
