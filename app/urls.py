@@ -6,5 +6,6 @@ urlpatterns = patterns('app.views',
 	(r'^user/register/$', 'user_register'),
 	(r'^user/register/twitter/$', 'user_register_twitter'),
 
-	(r'^data/post/$', 'data_post'),
+	(r'^data/register/(?P<user_key>\w+)/$', 'data_register'),
+	(r'^data/imok/(?P<user_key>\w+)/$', 'data_imok'),
 )

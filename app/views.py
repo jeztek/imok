@@ -86,24 +86,33 @@ def user_register_twitter(request):
 		return render_to_response('user_register_twitter.html', {})
 
 
-@login_required
-def data_post(request):
+def data_register(request, user_key):
+
+	return JsonResponse({
+		"result" : True,
+		"first_name" : "Tom",
+		"last_name" : "Jones",
+	})
+
+
+#@login_required
+def data_imok(request, user_key):
 	try:
 		lat				= request.REQUEST['lat']
 		lon				= request.REQUEST['lon']
-		message			= request.REQUEST['message']
 	except KeyError:
 		return JsonResponse({'error' : 'missing parameter'})
 
+	message			= "I'm Ok!"
 	timestamp = datetime.today()
-	post = Post.objects.create(
-		user		= request.user,
-		datetime	= timestamp,
-		lat			= lat,
-		lon			= lon,
-		message		= message,
-	)
+#	post = Post.objects.create(
+#		user		= request.user,
+#		datetime	= timestamp,
+#		lat			= lat,
+#		lon			= lon,
+#		message		= message,
+#	)
 
-	result = twitter_post(request.user, message)
+#	result = twitter_post(request.user, message)
+	result = True
 	return JsonResponse({'result' : result})
-
