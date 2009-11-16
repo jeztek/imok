@@ -1,10 +1,16 @@
 === IMOk ===
 
+http://www.github.com/jeztek/imok
+http://www.github.com/jeztek/imok_android
+http://www.github.com/jeztek/imok_iphone
+
 
 === TODO ===
+* Error checking of input fields
 * Twilio based callback authentication
+* So many other things...
 
 
 === Dependencies ===
-Tweepy
-       http://github.com/joshthecoder/tweepy
+PyFacebook	 http://github.com/sciyoshi/pyfacebook/
+Tweepy		 http://github.com/joshthecoder/tweepy
