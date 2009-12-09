@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <title>Facebook Connect - Am I Ok?</title>
+</head>
+<body>
+  <h1>Facebook Connect - Am I Ok?</h1>
+  <p> In order to be able to update your status in case of emergency we need to have your Facebook's credentails and you have to grant offiline and status' update permition.</p>  
+  
+  <div id="user">
+      <p>Please Login:</p>
+      <fb:login-button onlogin="facebook_onlogin();"></fb:login-button>
+  </div>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
+   
+  
+  <div id="session_k">SESSION KEY</div>
+
+  <form id="FB_form" method="GET" action="nextstep.htm"> 
+      This form should be invisible (Also the input must be hidden).<br>
+      It is used to submit the Facebook user ID to the Server.<br>
+      This may be optional id you are using a session<br><br>
+      <input type="text" name="UserID" value="HERE_THE_USERID">  
+      <input type="text" name="FBid" id="FacebookId" value="This will change">        
+  </form>
+  
+  
+  <a href="http://www.facebook.com/apps/application.php?id=175494581193" target="_blank">App on Facebook</a>
+
+  <script type="text/javascript">
+  
+    var imok_userid = "HERE_THE_USERID_THROUGH_DJANGO";
+
+    var fb_user_id = 0;
+
+    function update_user_box() {
+        fb_user_id = FB.Connect.get_loggedInUser();
+        //document.getElementById('FacebookId').value = fb_user_id;
+
+        
+        var user_box = document.getElementById("user");
+
+        user_box.innerHTML =
+        "<span>"
+        + "<fb:profile-pic uid='loggedinuser' facebook-logo='true'></fb:profile-pic>"
+        + "Welcome, <fb:name uid='loggedinuser' useyou='false'></fb:name>"
+        + "</span>";
+
+        FB.XFBML.Host.parseDomTree();
+    }
+
+
+    function facebook_onlogin ()
+    {        
+         update_user_box();
+                
+
+//        window.alert("Session is ready");
+        //If you want to make Facebook API calls from JavaScript do something like
+
+         var fDone = false;
+//         while (!fDone)
+//         {
+             FB.Connect.showPermissionDialog("offline_access,status_update ", function(perms) {
+               if (!perms) {
+                 //Ugly I know... working on finding a way to display a FB dialog.
+                 window.alert("You need to grant the permitions in order to update your status in case of emergency");
+                 //continue_without_permission();
+               } else {
+                 fDone = true;
+                 //document.getElementById('FB_form').submit();
+                 
+                 $.post("http://imok.jeztek.com/imok/RegisterFB", {fb_ID: fb_user_id, imOk_ID: imok_userid});
+                 
+               }
+             });
+//         }
+                  
+         
+    }
+     
+    FB_RequireFeatures(["XFBML"], function()
+    {
+      //FB.Connect.logout();
+      //FB.Connect.forceSessionRefresh();
+      FB.Facebook.init("19f81b252870caada7e5909b8fb01727", "xd_receiver.htm", {"ifUserConnected": update_user_box});
+
+      FB.Connect.get_status().waitUntilReady(function(status) {
+        var api = FB.Facebook.apiClient;
+        session_key = api.get_session().session_key;
+        
+        var session_box = document.getElementById("session_k");
+
+        session_box.innerHTML =  session_key       
+
+        
+      });
+
+
+//      FB.Facebook.get_sessionState().waitUntilReady(function()
+//      {
+
+
+         
+
+        
+/*
+        FB.Facebook.apiClient.friends_get(null, function(result, ex) {
+          //Do something with result
+                                    window.alert("Friends list: " + result);
+          });
+*/
+//      });
+    });
+  </script>
+
+</body>
+</html>

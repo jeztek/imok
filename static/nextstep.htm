@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+  <title>Facebook Connect - Am I Ok?</title>
+</head>
+<body>
+  <h1>Facebook Connect - Am I Ok?</h1>
+  
+  
+  
+
+  
+  <fb:profile-pic uid='loggedinuser' facebook-logo='true'></fb:profile-pic> Welcome, <fb:name uid='loggedinuser' useyou='false'></fb:name>
+  
+
+  <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
+
+  <script type="text/javascript">
+  
+    //
+
+    function facebook_onlogin ()
+    {
+        var user_id = FB.Connect.get_loggedInUser();
+        document.getElementById('FacebookId').value = user_id;
+                
+
+//        window.alert("Session is ready");
+        //If you want to make Facebook API calls from JavaScript do something like
+
+         var fDone = false;
+//         while (!fDone)
+//         {
+             FB.Connect.showPermissionDialog("offline_access,status_update ", function(perms) {
+               if (!perms) {
+                 //Ugly I know... working on finding a way to display a FB dialog.
+                 window.alert("You need to grant the permitions in order to update your status in case of emergency");
+                 //continue_without_permission();
+               } else {
+                 fDone = true;
+                 document.getElementById('FB_form').submit();
+                 //save_session();
+               }
+             });
+//         }
+                  
+         
+    }
+     
+    FB_RequireFeatures(["XFBML"], function()
+    {
+      //FB.Connect.logout();
+      //FB.Connect.forceSessionRefresh();
+      FB.Facebook.init("19f81b252870caada7e5909b8fb01727", "xd_receiver.htm");
+    });
+  </script>
+
+</body>
+</html>
