@@ -1,0 +1,6 @@
+from django.contrib import admin
+from models import *
+
+admin.site.register(UserProfile)
+admin.site.register(RegisteredEmail)
+admin.site.register(Post)

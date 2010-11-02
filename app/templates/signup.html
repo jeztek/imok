@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% if banner %}
+<div>{{ banner }}</div>
+{% endif %}
+
+<div>
+  <form action="" method="post">
+
+    Email<input type="text" name="email" /><br />
+    First Name<input type="text" name="firstName" /><br />
+    Last Name<input type="text" name="lastName" /><br />
+    Password<input type="password" name="password" /><br />
+    <input type="submit" value="Sign Up" />
+  </form>
+</div>
+
+{% endblock body %}

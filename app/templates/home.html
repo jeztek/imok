@@ -1,88 +1,198 @@
 {% extends "base.html" %}
 
+{% block head %}
+<style type="text/css">
+
+.homeWidgetTitle {
+  font-weight: bold;
+}
+
+table.homeLayout {
+  width: 100%;
+}
+
+td.homeLayout {
+  width: 50%;
+  vertical-align: top;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+table.messagePost {
+  border-width: 1px;
+}
+
+table.messagePost th {
+  font-weight: normal;
+  font-style: italic;
+  text-align: left;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+table.messagePost td {
+  text-align: left;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+table.widgetTable {
+}
+
+table.widgetTable th {
+  text-align: left;
+  padding-left: 0px;
+  padding-right: 5px;
+  font-weight: normal;
+}
+
+table.widgetTable td {
+  text-align: left;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.widget {
+  margin: 10px;
+  padding: 10px;
+}
+
+.widgetTitle {
+  border-bottom: 1px solid #777;
+  font-weight: bold;
+  font-size: 1.2em;
+  padding: 5px 0px;
+}
+.widgetAction {
+  margin-top: 5px;
+  float: right;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+.widgetItem{
+  padding: 5px 0px;
+}
+.meta {
+  font-size: 0.8em;
+  color: #777;
+}
+
+.banner {
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+
+  padding: 15px;
+
+  border: solid #aa0000 1px;
+  background-color: #fff2f2;
+  text-align: center;
+}
+
+.banner span {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+</style>
+{% endblock head %}
+
 {% block body %}
-<p>Welcome {{ first_name }} {{ last_name }} [ <a href="/user/logout/">Logout</a> ]</p>
 
-{% if message %}<div class="message">{{ message }}</div>{% endif %}
+{% if banner %}
+<div class="banner"><span>{{ banner }}</span></div>
+{% endif %}
 
-<div class="group_element">
-  <table class="table"><th>Phones</th></table>
-  {% if phones %}
-    <div class="subgroup_element">
-      <table class="table">
-	<th>Phone Number</th>
-	<th>User Key</th>
-	<th>Status</th>
-	{% for phone in phones %}
-	<tr>
-          <td>{{ phone.phone_number }}</td>
-          <td>{{ phone.user_key }}</td>
-          <td>
-	    {% ifnotequal phone.is_valid 1 %}pending
-            {% else %}registered{% endifnotequal %}
-	  </td>
-	  <td>[ <a href="/user/register/phone/delete/{{ phone.user_key }}/">delete</a> ]</td>
-	</tr>
-	{% endfor %}
-      </table>
-      + [ <a href="/user/register/phone/">Register another phone</a> ]
-    </div>
-  {% else %}
-  + [ <a href="/user/register/phone/">Register phone</a> ]
-  {% endif %}
-</div>
+<table class="homeLayout"><tr><td class="homeLayout">
 
-<div class="group_element">
-  <table class="table"><th>Accounts</th></table>
-  <div class="subgroup_element">
-    <table class="table">
-      {% if twitter_user %}
-      <tr>
-	<td>Twitter</td>
-	<td>{{ twitter_user.username }}</td>
-	<td>[ <a href="/user/register/twitter/delete/">delete</a> ]</td>
-      </tr>
-      {% else %}
-      <tr>
-	<td>+ [ <a href="/user/register/twitter/">Add Twitter</a> ]</td>
-      </tr>
-      {% endif %}
-
-      {% if facebook_user %}
-      <tr>
-	<td>Facebook</td>
-	<td>{{ facebook_user.fbid }}</td>
-	<td>[ <a href="/user/register/facebook/delete/">delete</a> ]</td>
-      </tr>
-      {% else %}
-      <tr>
-	<td>+ [ <a href="/user/register/facebook/">Add Facebook</a> ]</td>
-      </tr>
-      {% endif %}
-    </table>
+<div class="widget">
+<div class="widgetTitle">Profile
+  <div class="widgetAction">
+    <a href="/profile/edit/">edit</a>
   </div>
 </div>
 
-<div class="group_element">
-  <table class="table"><th>Recent Messages</th></table>
-  {% if messages %}
-    <div class="subgroup_element">
-      <table class="table">
-	<th>Date/Time</th>
-	<th>Location</th>
-	<th>Message</th>
-	{% for message in messages %}
-	<tr>
-	  <td>{{ message.datetime }}</td>
-	  <td>{{ message.lat}} {{ message.lon }}</td>
-	  <td>{{ message.message }}</td>
-	</tr>
-	{% endfor %}
-      </table>
-    </div>
-  {% else %}
-    <div class="subgroup_element">No messages</div>
+<p>
+<table class="widgetTable">
+<tr>
+  <th>Name:</th>
+  <td>{{ user.first_name }} {{ user.last_name }}</td>
+</tr>
+<tr>
+  <th>Time zone:</th>
+  <td>{{ profile.tz }}</td>
+</tr>
+</table>
+<br/>
+<a href="/profile/delete/">Delete your account</a>
+
+</p>
+
+</div>
+
+<div class="widget">
+<div class="widgetTitle">Email contacts
+  <div class="widgetAction">
+    <a href="/email/">edit</a>
+  </div>
+</div>
+
+<p>The following people will be notified when you post a message:</p>
+<p>
+{% if emails %}
+  {% for email in emails %}
+    <div style="padding-left: 20px;">{{ email.email }}{% if not forloop.last %},{% endif %}</div>
+  {% endfor %}
+  {% if numEmailsNotShown %}
+    <div style="font-style: italic;">... and {{ numEmailsNotShown }} more not shown.</div>
   {% endif %}
+{% else %}
+  [ No email contacts set ]
+{% endif %}
+</p>
+</div>
+
+</td>
+<td class="homeLayout">
+
+<div class="widget">
+<div class="widgetTitle">Info</div>
+<p>
+To post a status message, you can <a href="/download/">download</a> a mobile app
+or send a text message from your mobile phone to the SMS gateway number above.  
+</p>
+<p>
+The text message should contain a status message followed by either "#imok" or "#needhelp".
+It can also optionally contain a location "#loc &lt;location text&gt;".
+</p>
+<p>Examples:</p>
+<p>
+  <ul>
+    <li><tt>Need water. #needhelp #loc -133.7898,77.2353</tt></li>
+    <li><tt>Earthquake! Am safe. #imok #loc at home</tt></li>
+  </ul>
+</p>
+</div>
+
+<div class="widget">
+<div class="widgetTitle">Recent messages you sent</div>
+
+{% if posts %}
+<p>
+{% for post in posts %}
+  {{ post.asWidgetRow }}
+{% endfor %}
+</p>
+
+{% if numPostsNotShown %}
+  <p>Showing most recent {{ posts|length }} of {{ numPosts }} posts.</p>
+{% endif %}
+
+{% else %}
+<p>[ You haven't posted any messages yet ]</p>
+{% endif %}
+
+</td></tr></table>
 </div>
 
 {% endblock body %}

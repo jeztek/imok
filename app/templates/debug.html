@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<p>
+<form action="/debug/resetdb/" method="post">
+  <input type="submit" value="Reset the data store"/>
+</form>
+</p>
+
+<p>
+<form action="/debug/post/" method="post">
+  <input type="submit" value="Post an OK message"/>
+</form>
+</p>
+
+{% endblock body %}

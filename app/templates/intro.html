@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block head %}
+<style>
+
+body { font-family:arial; }
+#superTitle {
+  font-size: 24px;
+  font-weight: bold;
+}
+#content {
+  font-size: 16px;
+  font-weight: normal;
+  padding-top:10px;
+}
+.signupItem {
+  padding:10px;
+  font-weight:bold;
+  font-size: 12px;
+}
+.signupItem input {
+  font-size:16px;
+  width: 240px;
+  padding:5px;
+}
+#signupSubmit {
+  text-align: right;
+  padding-right: 30px;
+  padding-top: 20px;
+}
+#signupSubmit input {
+  font-size:16px;
+  padding:5px;
+}
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+<style>
+  a {border: 0px;}
+  img{border: 0px;}
+  body {font-family:arial;}
+  #superTitle{font-size: 24px; font-weight: bold;}
+  #content{font-size: 16px; font-weight: normal;padding-top:10px;}
+  #gradientContainer{background-image: url(/static/img/gradient.png); background-repeat: repeat-x; height: 485px; margin: 0px -25px 0px -25px;border-bottom: 1px solid #777;}
+  #mainImage{background-image:url(/static/img/texting.jpg); position:relative;}
+  #signup{position:absolute; right:78px; top:315px;}
+  .logoBox{padding-left: 30px; padding-right: 30px; text-align:center;}      
+</style>
+
+<center>
+<div id="gradientContainer">
+  <div id="mainImage" style="width:678px; height: 450px; margin-top: 25px; text-align:left">
+   <div id="signup">
+     <a href="/home/" ><img src="/static/img/signup_button.png"></a>
+   </div>
+  </div>
+</div>
+
+<div style="width:678px; margin-top: 0px; text-align: left">
+  <p style="text-align: center"><i>We're grateful for assistance from our sponsors:</i></p>
+  <div style="text-align: center">
+    <a class="logoBox" href="http://www.worldbank.org/"><img class="partnerLogo" src="/static/img/wb_logo.png" width="149" height="45"/></a>
+    <a class="logoBox" href="http://www.rhok.org/"><img class="partnerLogo" src="/static/img/rhok_logo.png" width="109" height="45"/></a>
+    <a class="logoBox" href="http://www.google.com/"><img class="partnerLogo" src="/static/img/google_logo.png" width="113" height="45"/></a>
+    <a class="logoBox" href="http://www.nasa.gov/"><img class="partnerLogo" src="/static/img/nasa_logo.png" width="53" height="45"/></a>
+  </div>
+</div>
+</center>
+
+{% endblock body %}

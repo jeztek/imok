@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block body %}
+<center>
+  <div style="width:500px; text-align:left;">
+
+    <style>
+      .removeLink{background-color:transparent; padding: 0px; border-width: 0; font-size: 0.7em; border-color:transparent; cursor: pointer; text-decoration:underline; color:#0000FF; }
+    </style>
+
+    <div id="wizardContent">
+      <div>
+	<b>Edit Email Contacts</b><br/><br/>
+
+	<span style="font-size: 0.8em;">
+	  Enter emails of people you'd like to notify with <i>I'm OK!</i>
+	</span><br/><br/>
+
+        {% if emailError %}
+        <div class="errorlist">{{ emailError }}</div>
+        {% endif %}
+
+	<form action="/email/" method="post">
+	  <input type="text" value="email address" style="color: #999999;" onclick="if (this.value == 'email address') {this.value = ''; this.style.color = '#000000'; }" name="email"/>&nbsp;<input type="submit" value="Add"/><br>
+	</form>
+      </div>
+
+      <div>
+        {% if registeredEmailList %}
+        <br/>Current email contacts:
+	<table>
+	  {% for registeredEmail in registeredEmailList %}
+	  <tr>
+	    <td style="padding-left: 15px;">{{ registeredEmail.emailAddress }}</td>
+	    <td><form action="/email/remove/?email={{ registeredEmail.email|urlencode }}&returnAddr=%2Femail%2F" method="post">
+		<input style="font-size: 0.9em; border-width: 0px;" class="removeLink" type="submit" value="Remove"/>
+	    </form></td>
+	  </tr>
+	  {% endfor %}
+	</table>
+        {% endif %}
+      </div>
+      <div class="nextButton">
+	<input type="submit" value="Done" onclick="document.location = '/home/';">
+      </div>
+    </div>
+  </div>
+
+</center>
+{% endblock body %}
+

@@ -83,11 +83,12 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-	'imok.app',
+    'django.contrib.admin',
+    'imok.app',
 )
 
 AUTH_PROFILE_MODULE = "app.UserProfile"
-LOGIN_URL = "/user/login/"
+LOGIN_URL = "/login/"
 
 # Import local settings at the end so they can override settings here
 try:

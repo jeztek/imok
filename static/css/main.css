@@ -1,7 +1,8 @@
 
 body {
     margin: 0px; padding: 0px;
-    font-family: tahoma,sans-serif,arial,helvetica;
+    font-family: arial,tahoma,sans-serif,arial,helvetica;
+    background-color: #FFFFFF;
 }
 
 .padded {
@@ -12,7 +13,7 @@ body {
     border: solid 1px #eaaeae;
 }
 
-#header {
+/*#header {
     font-size: 24px;
     background: rgb(96,00,00);
     border-bottom: solid 2px #AED0EA
@@ -21,7 +22,7 @@ body {
 #header img {
     margin-left: -45px; 
     border: none;
-}
+}*/
 
 .table {
   text-align: left;
@@ -76,15 +77,62 @@ input[type=text],input[type=password] {
     padding: 8px;
 }
 
-input[type=text]:focus,input[type=password]:focus {
-    outline: none;
-    border: solid 1px #AAA;
-    background: #FCFCFC;
-}
+
+
 
 input[type=submit] {
-    margin-top: 10px;
-    border: solid 1px #AAA;
     font-size: 18px;
     padding: 5px;
+}
+
+/* ------ Begin Otavio's lame css attempt ------ */
+/* HEADER */
+
+#header { position:relative; height:50px; background-image: url(/static/img/BlueFade.png); background-repeat:repeat-x; border-bottom: 1px solid #000;}
+#header h1#logo { margin:0; padding:2px 10px; height:40px; position:absolute; }
+#header img { margin:0; padding:0; border:none; }
+
+/* NAV */
+
+#nav-global { position:absolute; margin:0; bottom:0; right:0px; white-space:nowrap; font-weight:bold; font-size:14px; }
+#nav-global li { display:block; float:left; list-style-type:none; margin:0; padding:0; }
+#nav-global a { text-decoration:none; color:#ffffff; display:block; float:left; padding:5em 16px 16px 16px; }
+#nav-global a:hover { color:white; background:#04351d; }
+
+.errorlist {
+  font-weight: bold;
+  color: red;
+  padding-bottom: 10px;
+}
+
+.biglink {
+  font-size: 1.2em;
+}
+
+table .messagePost {
+  border-width: 1px;
+}
+/*wizard*/
+
+#wizardContent{background-color:#f1f2f2; margin-top: 25px; padding: 25px; border-top: 1px solid #ccc; }
+
+.nextButton {
+  text-align:right;
+}
+
+table.profileForm th {
+  font-weight: normal;
+}
+
+select {
+    font-size: 18px;
+    padding: 8px;
+}
+
+.newUserInstructions {
+  font-size: 0.8em;
+}
+
+.partnerLogo {
+  border: 1px;
 }

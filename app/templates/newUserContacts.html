@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block body %}
+<center>
+<div style="width:500px; text-align:left;">
+  {% include "newUserNav.html" %}
+  
+  <style>
+    .removeLink{background-color:transparent; padding: 0px; border-width: 0; font-size: 0.7em; border-color:transparent; cursor: pointer; text-decoration:underline; color:#0000FF; }
+  </style>
+
+  <div id="wizardContent">
+    <div>
+      <b>Add Email Contacts</b><br/><br/>
+
+      <div class="newUserInstructions">
+        Enter emails of people you'd like to notify with <i>I'm OK!</i>
+        <br/><br/>
+        You may skip this for now, but you <i>must</i> complete this step
+	before you notify people with this service.<br/><br/>
+      </div>
+
+      {% if emailError %}
+      <div class="errorlist">{{ emailError }}</div>
+      {% endif %}
+
+      <form action="/newuser/contacts/" method="post">
+	<input type="text" value="email address" style="color: #999999;" onclick="if (this.value == 'email address') {this.value = ''; this.style.color = '#000000'; }" name="email"/>&nbsp;<input type="submit" value="Add"/><br>
+      </form>
+    </div>
+
+    <div>
+      {% if registeredEmailList %}
+      <br/>Current email contacts:
+      <table>
+	{% for registeredEmail in registeredEmailList %}
+	<tr>
+	  <td style="padding-left: 15px;">{{ registeredEmail.emailAddress }}</td>
+	  <td><form action="/email/remove/?email={{ registeredEmail.email|urlencode }}&returnAddr=%2Fnewuser%2Fcontacts%2F" method="post">
+	      <input style="font-size: 0.9em; border-width: 0px;" class="removeLink" type="submit" value="Remove"/>
+	  </form></td>
+	</tr>
+	{% endfor %}
+      </table>
+      {% endif %}
+    </div>
+    {% if registeredEmailList %}
+    <div class="nextButton">
+      <input type="submit" value="Next" onclick="document.location = '/newuser/download';">
+    </div>
+    {% else %}
+    <br/>
+    <div class="nextButton"><a href="/newuser/download/">Skip</a></div>
+    {% endif %}
+  </div>
+</div>
+
+</center>
+{% endblock body %}
