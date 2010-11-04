@@ -273,8 +273,8 @@ def m_post(request):
     except ObjectDoesNotExist:
         return JsonResponse({'result' : "error", 'message' : "unknown user"})
 
-    if signatureIsValid(request.raw_post_data, profile.userKey, \
-                        request.REQUEST['X-ImOk-Signature']):
+    if signatureIsValid(profile.userKey, request.raw_post_data, \
+                        request.META['HTTP_X_IMOK_SIGNATURE'])
         post = Post.fromText(message)
         post.user = user
         post.datetime = datetime.now()
