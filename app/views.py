@@ -274,7 +274,7 @@ def m_post(request):
         return JsonResponse({'result' : "error", 'message' : "unknown user"})
 
     if signatureIsValid(profile.userKey, request.raw_post_data, \
-                        request.META['HTTP_X_IMOK_SIGNATURE'])
+                        request.META['HTTP_X_IMOK_SIGNATURE']):
         post = Post.fromText(message)
         post.user = user
         post.datetime = datetime.now()
