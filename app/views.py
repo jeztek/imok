@@ -1,4 +1,6 @@
 from datetime import datetime
+import random
+import hmac, hashlib, base64
 
 try:
     from django.utils.safestring import mark_safe
@@ -94,13 +96,29 @@ def signup(request):
         return HttpResponseRedirect('/login/')
 
     elif request.method == 'POST':
-        form = SignupForm()
+        form = SignupForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             firstName = form.cleaned_data['firstName']
-            lastName = form.cleanedData['lastName']
-            password = form.cleanedData['password']
+            lastName = form.cleaned_data['lastName']
+            password = form.cleaned_data['password']
 
+            try:
+                user = User.objects.create_user(email, email, password)
+                user.first_name = firstName
+                user.last_name = lastName
+                user.save()
+
+                UserProfile.objects.create(
+                    user=user,
+                    userKey = str('%016x' % random.getrandbits(64)),
+                    tz="US/Pacific",
+                )
+            except IntegrityError:
+                return render_to_response('login.html', {
+                    'banner' : 'user already exists',
+                })
+            
             user = auth.authenticate(username=email, password=password)
             auth.login(request, user)
             return home(request)
@@ -200,3 +218,51 @@ def download(request):
     return render_to_response('download.html', {})
 
 
+def m_login(request):
+    try:
+        email = request.REQUEST['email']
+        password = request.REQUEST['password']
+    except KeyError:
+        return JsonResponse({
+            'result'     : "error",
+            'message'    : "missing email or password",
+            'auth_token' : None,
+        })
+
+    user = auth.authenticate(username=email, password=password)
+    if user == None:
+        return JsonResponse({
+            'result'     : "error",
+            'message'    : "Invalid email or password",
+            'auth_token' : None,
+        })
+    return JsonResponse({
+        'result'     : "ok",
+        'message'    : 'login successful',
+        'auth_token' : user.get_profile().userKey,
+    })
+
+
+def check_signature(key, data, signature):
+    h = hmac.new(key, data, hashlib.sha1)
+    return base64.b64encode(h.digest()) == signature
+    
+
+def m_post(request):
+    try:
+        email = request.REQUEST['email']
+        timestamp = request.REQUEST['timestamp']
+        message = request.REQUEST['message']
+    except KeyError:
+        return JsonResponse({
+            'result'  : "error",
+            'message' : "missing parameter"
+        })
+
+    user = User.objects.get(email=email)
+    profile = user.get_profile()
+    if check_signature(request.raw_post_data, profile.userKey, \
+                       request.REQUEST['X-ImOk-Signature']):
+        return JsonResponse({'result' : "ok", 'message' : message})
+
+    return JsonResponse({'result' : "error", 'message' : "invalid signature"})

@@ -12,7 +12,6 @@ TZ_CHOICES = (('US/Pacific', 'US/Pacific'), ('US/Eastern', 'US/Eastern'))
 class UserProfile(models.Model):
     user         = models.ForeignKey(User, unique=True)
     userKey      = models.CharField(max_length=5)
-    phoneNumber	 = models.CharField(max_length=40)
     tz           = models.CharField(max_length=50, \
                                     choices=TZ_CHOICES, \
                                     default="US/Pacific", \
