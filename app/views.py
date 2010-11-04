@@ -10,6 +10,7 @@ except ImportError:
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
+from django.core import validators
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -155,10 +156,10 @@ def email(request):
         })
 
     elif request.method == 'POST':
-        email = request.REQUEST['emailAddress']
-
+        email = request.REQUEST['email']
+        emailError = None
         try:
-            django.core.validators.isValidEmail(email, None)
+            validators.validate_email(email)
 
             if RegisteredEmail.objects.filter(user=request.user, email=email).count() > 0:
                 emailError = "Email address already registered or unsubscribed."
@@ -169,11 +170,12 @@ def email(request):
                     email     = email,
                     isBlocked = False,
                 )                
-        except django.core.validators.ValidationError, exc:
+        except validators.ValidationError, exc:
             emailError = 'Enter a valid email address'
 
         emails = RegisteredEmail.objects.filter(user=request.user, isBlocked=False).order_by('email')
         return render_to_response('registerEmail.html', {
+            'emailError' : emailError,
             'emails' : emails,
         })
 
@@ -205,6 +207,7 @@ def profileDelete(request):
         RegisteredEmail.objects.filter(user=request.user).delete()
         UserProfile.objects.get(user=request.user).delete()
         request.user.delete()
+        auth.logout(request)
         return HttpResponseRedirect('/profile/deleted/')
 
 

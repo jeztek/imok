@@ -18,7 +18,7 @@ class UserProfile(models.Model):
                                     verbose_name="Time zone")
 
     def __unicode__(self):
-        return self.user.username + " - " + self.phoneNumber
+        return self.user.username
 
 
 class RegisteredEmail(models.Model):
@@ -27,9 +27,12 @@ class RegisteredEmail(models.Model):
     email        = models.EmailField()
     isBlocked    = models.BooleanField(default=False)
 
+    def __unicode__(self):
+        return self.email
+
     @classmethod
     def generateHashKey(cls, email):
-        return hashlib.sha1(self.email).hexdigest()
+        return hashlib.sha1(email).hexdigest()
         
     def permalink(self, host=''):
         return "%s/unsubscribe?id=%s" % (host, self.hashkey)

@@ -26,13 +26,13 @@
       </div>
 
       <div>
-        {% if registeredEmailList %}
+        {% if emails %}
         <br/>Current email contacts:
 	<table>
-	  {% for registeredEmail in registeredEmailList %}
+	  {% for email in emails %}
 	  <tr>
-	    <td style="padding-left: 15px;">{{ registeredEmail.emailAddress }}</td>
-	    <td><form action="/email/remove/?email={{ registeredEmail.email|urlencode }}&returnAddr=%2Femail%2F" method="post">
+	    <td style="padding-left: 15px;">{{ email.email }}</td>
+	    <td><form action="/email/remove/?email={{ email.email|urlencode }}&returnAddr=%2Femail%2F" method="post">
 		<input style="font-size: 0.9em; border-width: 0px;" class="removeLink" type="submit" value="Remove"/>
 	    </form></td>
 	  </tr>
