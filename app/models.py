@@ -76,8 +76,8 @@ class Post(models.Model):
         isOk = False
         atText = ''
         for tup in tags:
-            if tup[0] == '#imok': ok = True
-            if tup[0] == '#loc':  continue
+            if tup[0] == '#imok': isOk = True
+            if tup[0] != '#loc': continue
 
             ll_regex = re.compile(r'\s*(-?\d+\.\d+),(-?\d+\.\d+)')
             m = ll_regex.match(tup[1])
