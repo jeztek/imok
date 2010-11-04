@@ -246,7 +246,7 @@ def m_login(request):
     })
 
 
-def check_signature(key, data, signature):
+def signatureIsValid(key, data, signature):
     h = hmac.new(key, data, hashlib.sha1)
     return base64.b64encode(h.digest()) == signature
     
@@ -255,17 +255,32 @@ def m_post(request):
     try:
         email = request.REQUEST['email']
         timestamp = request.REQUEST['timestamp']
-        message = request.REQUEST['message']
+        message = request.REQUEST['message']            
     except KeyError:
         return JsonResponse({
             'result'  : "error",
             'message' : "missing parameter"
         })
 
-    user = User.objects.get(email=email)
-    profile = user.get_profile()
-    if check_signature(request.raw_post_data, profile.userKey, \
-                       request.REQUEST['X-ImOk-Signature']):
+    latitude = longitude = None
+    if 'latitude' in request.REQUEST and 'longitude' in request.REQUEST:
+        latitude = request.REQUEST['latitude']
+        longitude = request.REQUEST['longitude']
+
+    try:
+        user = User.objects.get(email=email)
+        profile = user.get_profile()
+    except ObjectDoesNotExist:
+        return JsonResponse({'result' : "error", 'message' : "unknown user"})
+
+    if signatureIsValid(request.raw_post_data, profile.userKey, \
+                        request.REQUEST['X-ImOk-Signature']):
+        post = Post.fromText(message)
+        post.user = user
+        post.datetime = datetime.now()
+        post.postId = Post.generatePostId()
+        post.save()
+        
         return JsonResponse({'result' : "ok", 'message' : message})
 
     return JsonResponse({'result' : "error", 'message' : "invalid signature"})

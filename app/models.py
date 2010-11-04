@@ -86,7 +86,7 @@ class Post(models.Model):
                 post.longitude = float(m.group(2))
             else:
                 atText += tup[1] + ' '
-        post.positionText = atText
+        post.position = atText
         post.isOk = isOk
         return post
 
