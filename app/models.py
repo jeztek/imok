@@ -52,7 +52,7 @@ class Post(models.Model):
     postId    = models.CharField(max_length=100, unique=True)
 
     def __unicode__(self):
-        return self.user.username + " - " + self.message
+        return self.message
 
     @classmethod
     def generatePostId(cls):
@@ -73,7 +73,7 @@ class Post(models.Model):
     def fromText(cls, text):
         post = Post(message=text)
         tags = Post.findTags(text)
-        isOk = false
+        isOk = False
         atText = ''
         for tup in tags:
             if tup[0] == '#imok': ok = True
